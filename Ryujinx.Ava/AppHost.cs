@@ -869,7 +869,26 @@ namespace Ryujinx.Ava
         {
             // Run a status update only when a frame is to be drawn. This prevents from updating the ui and wasting a render when no frame is queued.
             string dockedMode = ConfigurationState.Instance.System.EnableDockedMode ? LocaleManager.Instance[LocaleKeys.Docked] : LocaleManager.Instance[LocaleKeys.Handheld];
-            string scalingFilter = ConfigurationState.Instance.Graphics.ScalingFilter.Value.ToString();
+
+            string scalingFilter;
+            switch ((int)ConfigurationState.Instance.Graphics.ScalingFilter.Value)
+            {
+                case 0:
+                scalingFilter = LocaleManager.Instance[LocaleKeys.ScalingFilterBilinear];
+                break;
+
+                case 1:
+                scalingFilter = LocaleManager.Instance[LocaleKeys.ScalingFilterNearest];
+                break;
+
+                case 2:
+                scalingFilter = LocaleManager.Instance[LocaleKeys.ScalingFilterFsr];
+                break;
+
+                default:
+                scalingFilter = ConfigurationState.Instance.Graphics.ScalingFilter.Value.ToString();
+                break;
+            }
 
             if (GraphicsConfig.ResScale != 1)
             {

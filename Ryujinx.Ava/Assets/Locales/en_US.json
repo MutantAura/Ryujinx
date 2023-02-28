@@ -637,5 +637,8 @@
   "SmaaHigh": "SMAA High",
   "SmaaUltra": "SMAA Ultra",
   "UserEditorTitle" : "Edit User",
-  "UserEditorTitleCreate" : "Create User"
+  "UserEditorTitleCreate" : "Create User",
+  "ScalingFilterBilinear" : "Bilinear",
+  "ScalingFilterNearest" : "Nearest",
+  "ScalingFilterFsr" : "FSR"
 }

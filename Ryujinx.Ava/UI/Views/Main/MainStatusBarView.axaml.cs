@@ -53,14 +53,14 @@ namespace Ryujinx.Ava.UI.Views.Main
         {
             int currentFilter = (int)ConfigurationState.Instance.Graphics.ScalingFilter.Value;
             
-                if (currentFilter < Enum.GetNames(typeof(ScalingFilter)).Length - 1)
-                {
-                    ConfigurationState.Instance.Graphics.ScalingFilter.Value += 1;
+            if (currentFilter < Enum.GetNames(typeof(ScalingFilter)).Length - 1)
+            {
+                ConfigurationState.Instance.Graphics.ScalingFilter.Value += 1;
 
-                    return;
-                }
-
-                ConfigurationState.Instance.Graphics.ScalingFilter.Value = 0;
+                return;
             }
+
+            ConfigurationState.Instance.Graphics.ScalingFilter.Value = 0;
         }
     }
+}

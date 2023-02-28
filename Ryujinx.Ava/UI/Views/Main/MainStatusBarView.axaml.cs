@@ -48,5 +48,19 @@ namespace Ryujinx.Ava.UI.Views.Main
 
             ConfigurationState.Instance.Graphics.AspectRatio.Value = (int)aspectRatio + 1 > Enum.GetNames(typeof(AspectRatio)).Length - 1 ? AspectRatio.Fixed4x3 : aspectRatio + 1;
         }
+
+        private void ScalingFilter_PointerReleased(object sender, PointerReleasedEventArgs e)
+        {
+            int currentFilter = (int)ConfigurationState.Instance.Graphics.ScalingFilter.Value;
+            
+                if (currentFilter < Enum.GetNames(typeof(ScalingFilter)).Length - 1)
+                {
+                    ConfigurationState.Instance.Graphics.ScalingFilter.Value += 1;
+
+                    return;
+                }
+
+                ConfigurationState.Instance.Graphics.ScalingFilter.Value = 0;
+            }
+        }
     }
-}

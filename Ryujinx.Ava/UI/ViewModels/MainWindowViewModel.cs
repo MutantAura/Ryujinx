@@ -56,6 +56,7 @@ namespace Ryujinx.Ava.UI.ViewModels
         private string _searchText;
         private Timer _searchTimer;
         private string _dockedStatusText;
+        private string _scalingFilterText;
         private string _fifoStatusText;
         private string _gameStatusText;
         private string _volumeStatusText;
@@ -499,6 +500,17 @@ namespace Ryujinx.Ava.UI.ViewModels
             set
             {
                 _dockedStatusText = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public string ScalingFilterText
+        {
+            get => _scalingFilterText;
+            set
+            {
+                _scalingFilterText = value;
 
                 OnPropertyChanged();
             }
@@ -1184,6 +1196,7 @@ namespace Ryujinx.Ava.UI.ViewModels
                     }
 
                     DockedStatusText = args.DockedMode;
+                    ScalingFilterText = args.ScalingFilter;
                     AspectRatioStatusText = args.AspectRatio;
                     GameStatusText = args.GameStatus;
                     VolumeStatusText = args.VolumeStatus;

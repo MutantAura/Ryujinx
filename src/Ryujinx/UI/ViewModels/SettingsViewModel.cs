@@ -36,24 +36,91 @@ namespace Ryujinx.Ava.UI.ViewModels
         private TimeZoneContentManager _timeZoneContentManager;
 
         private readonly List<string> _validTzRegions;
-
+        private AvaloniaList<TimeZone> _timeZones;
         private readonly Dictionary<string, string> _networkInterfaces;
-
-        private float _customResolutionScale;
-        private int _resolutionScale;
-        private int _graphicsBackendMultithreadingIndex;
-        private float _volume;
-        private bool _isVulkanAvailable = true;
-        private bool _directoryChanged;
+        private ObservableCollection<ComboBoxItem> _availableGpus;
         private readonly List<string> _gpuIds = new();
+        private bool _isVulkanAvailable = true;
+
+        // User Interface
+        private bool _enableDiscordIntegration;
+        private bool _checkUpdatesOnStart;
+        private bool _showConfirmExit;
+        private bool _rememberWindowState;
+        private int _hideCursor;
+        private int _baseStyleIndex;
+        private AvaloniaList<string> _gameDirectories;
+
+        // Input
+        private bool _enableDockedMode;
+        private bool _enableKeyboard;
+        private bool _enableMouse;
+
+        // Keyboard Hotkeys
+        private HotkeyConfig _keyboardHotkey;
+
+        // System
+        private int _region;
+        private int _language;
+        private string _timeZone;
+        private DateTimeOffset _currentDate;
+        private TimeSpan _currentTime;
+        private bool _enableVsync;
+        private bool _enableFsIntegrityChecks;
+        private bool _expandDramSize;
+        private bool _ignoreMissingServices;
+
+        // CPU
+        private bool _enablePptc;
+        private int _memoryMode;
+        private bool _useHypervisor;
+
+        // Graphics
         private int _graphicsBackendIndex;
+        private int _preferredGpuIndex;
+        private bool _enableShaderCache;
+        private bool _enableTextureRecompression;
+        private bool _enableMacroHLE;
+        private bool _enableColorSpacePassthrough;
+        private int _resolutionScale;
+        private float _customResolutionScale;
+        private int _antiAliasingEffect;
         private int _scalingFilter;
         private int _scalingFilterLevel;
+        private int _maxAnisotropy;
+        private int _aspectRatio;
+        private int _graphicsBackendMultithreadingIndex;
+        private string _shaderDumpPath;
+        
+        // Audio
+        private int _audioBackend;
+        private float _volume;
+        private bool _isOpenAlEnabled;
+        private bool _isSoundIoEnabled;
+        private bool _isSDL2Enabled;
+
+        // Network
+        private int _multiplayerModeIndex;
+        private bool _enableInternetAccess;
+        private int _networkInterfaceIndex;
+
+        // Logging
+        private bool _enableFileLog;
+        private bool _enableStub;
+        private bool _enableInfo;
+        private bool _enableWarn;
+        private bool _enableError;
+        private bool _enableTrace;
+        private bool _enableGuest;
+        private bool _enableDebug;
+        private bool _enableFsAccessLog;
+        private int _fsGlobalAccessLogMode;
+        private int _openglDebugLevel;
 
         public event Action CloseWindow;
         public event Action SaveSettingsEvent;
-        private int _networkInterfaceIndex;
-        private int _multiplayerModeIndex;
+
+        private bool _directoryChanged;
 
         public int ResolutionScale
         {
@@ -128,53 +195,453 @@ namespace Ryujinx.Ava.UI.ViewModels
 
         public bool IsMacOS => OperatingSystem.IsMacOS();
 
-        public bool EnableDiscordIntegration { get; set; }
-        public bool CheckUpdatesOnStart { get; set; }
-        public bool ShowConfirmExit { get; set; }
-        public bool RememberWindowState { get; set; }
-        public int HideCursor { get; set; }
-        public bool EnableDockedMode { get; set; }
-        public bool EnableKeyboard { get; set; }
-        public bool EnableMouse { get; set; }
-        public bool EnableVsync { get; set; }
-        public bool EnablePptc { get; set; }
-        public bool EnableInternetAccess { get; set; }
-        public bool EnableFsIntegrityChecks { get; set; }
-        public bool IgnoreMissingServices { get; set; }
-        public bool ExpandDramSize { get; set; }
-        public bool EnableShaderCache { get; set; }
-        public bool EnableTextureRecompression { get; set; }
-        public bool EnableMacroHLE { get; set; }
-        public bool EnableColorSpacePassthrough { get; set; }
+        public bool EnableDiscordIntegration 
+        { 
+            get => _enableDiscordIntegration; 
+            set
+            {
+                _enableDiscordIntegration = value;
+
+                OnPropertyChanged();
+            }
+        }
+        
+        public bool CheckUpdatesOnStart 
+        { 
+            get => _checkUpdatesOnStart; 
+            set
+            {
+                _checkUpdatesOnStart = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool ShowConfirmExit
+        {
+            get => _showConfirmExit;
+            set 
+            {
+                _showConfirmExit = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool RememberWindowState
+        {
+            get => _rememberWindowState;
+            set
+            {
+                _rememberWindowState = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int HideCursor
+        {
+            get => _hideCursor;
+            set
+            {
+                _hideCursor = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableDockedMode
+        {
+            get => _enableDockedMode;
+            set
+            {
+                _enableDockedMode = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableKeyboard
+        {
+            get => _enableKeyboard;
+            set
+            {
+                _enableKeyboard = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableMouse
+        {
+            get => _enableMouse;
+            set
+            {
+                _enableMouse = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableVsync
+        {
+            get => _enableVsync;
+            set
+            {
+                _enableVsync = value;
+
+                OnPropertyChanged();
+            }
+        }
+        
+        public bool EnablePptc
+        {
+            get => _enablePptc;
+            set
+            {
+                _enablePptc = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableInternetAccess
+        {
+            get => _enableInternetAccess;
+            set
+            {
+                _enableInternetAccess = value;
+
+                OnPropertyChanged();
+            }
+        }
+        
+        public bool EnableFsIntegrityChecks
+        {
+            get => _enableFsIntegrityChecks;
+            set
+            {
+                _enableFsIntegrityChecks = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IgnoreMissingServices
+        {
+            get => _ignoreMissingServices;
+            set
+            {
+                _ignoreMissingServices = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool ExpandDramSize
+        {
+            get => _expandDramSize;
+            set
+            {
+                _expandDramSize = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableShaderCache
+        {
+            get => _enableShaderCache;
+            set
+            {
+                _enableShaderCache = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableTextureRecompression
+        {
+            get => _enableTextureRecompression;
+            set
+            {
+                _enableTextureRecompression = value;
+
+                OnPropertyChanged();
+            }
+        }
+        
+        public bool EnableMacroHLE
+        {
+            get => _enableMacroHLE;
+            set
+            {
+                _enableMacroHLE = value;
+
+                OnPropertyChanged();
+            }
+        }
+        
+        public bool EnableColorSpacePassthrough
+        {
+            get => _enableColorSpacePassthrough;
+            set
+            {
+                _enableColorSpacePassthrough = value;
+
+                OnPropertyChanged();
+            }
+        }
+
         public bool ColorSpacePassthroughAvailable => IsMacOS;
-        public bool EnableFileLog { get; set; }
-        public bool EnableStub { get; set; }
-        public bool EnableInfo { get; set; }
-        public bool EnableWarn { get; set; }
-        public bool EnableError { get; set; }
-        public bool EnableTrace { get; set; }
-        public bool EnableGuest { get; set; }
-        public bool EnableFsAccessLog { get; set; }
-        public bool EnableDebug { get; set; }
-        public bool IsOpenAlEnabled { get; set; }
-        public bool IsSoundIoEnabled { get; set; }
-        public bool IsSDL2Enabled { get; set; }
+        
+        public bool EnableFileLog
+        {
+            get => _enableFileLog;
+            set
+            {
+                _enableFileLog = value;
+
+                OnPropertyChanged();
+            }
+        }
+        
+        public bool EnableStub
+        {
+            get => _enableStub;
+            set
+            {
+                _enableStub = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableInfo
+        {
+            get => _enableInfo;
+            set
+            {
+                _enableInfo = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableWarn
+        {
+            get => _enableWarn;
+            set
+            {
+                _enableWarn = value;
+
+                OnPropertyChanged();
+            }
+        }
+        
+        public bool EnableError
+        {
+            get => _enableError;
+            set
+            {
+                _enableError = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableTrace
+        {
+            get => _enableTrace;
+            set
+            {
+                _enableTrace = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableGuest
+        {
+            get => _enableGuest;
+            set
+            {
+                _enableGuest = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableFsAccessLog
+        {
+            get => _enableFsAccessLog;
+            set
+            {
+                _enableFsAccessLog = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EnableDebug
+        {
+            get => _enableDebug;
+            set
+            {
+                _enableDebug = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsOpenAlEnabled
+        {
+            get => _isOpenAlEnabled;
+            set
+            {
+                _isOpenAlEnabled = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsSoundIoEnabled
+        {
+            get => _isSoundIoEnabled;
+            set
+            {
+                _isSoundIoEnabled = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsSDL2Enabled
+        {
+            get => _isSDL2Enabled;
+            set
+            {
+                _isSDL2Enabled = value;
+
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsCustomResolutionScaleActive => _resolutionScale == 4;
         public bool IsScalingFilterActive => _scalingFilter == (int)Ryujinx.Common.Configuration.ScalingFilter.Fsr;
 
         public bool IsVulkanSelected => GraphicsBackendIndex == 0;
-        public bool UseHypervisor { get; set; }
 
-        public string TimeZone { get; set; }
-        public string ShaderDumpPath { get; set; }
+        public bool UseHypervisor
+        {
+            get => _useHypervisor;
+            set
+            {
+                _useHypervisor = value;
 
-        public int Language { get; set; }
-        public int Region { get; set; }
-        public int FsGlobalAccessLogMode { get; set; }
-        public int AudioBackend { get; set; }
-        public int MaxAnisotropy { get; set; }
-        public int AspectRatio { get; set; }
-        public int AntiAliasingEffect { get; set; }
+                OnPropertyChanged();
+            }
+        }
+
+        public string TimeZone
+        {
+            get => _timeZone;
+            set
+            {
+                _timeZone = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public string ShaderDumpPath
+        {
+            get => _shaderDumpPath;
+            set
+            {
+                _shaderDumpPath = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int Language
+        {
+            get => _language;
+            set
+            {
+                _language = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int Region
+        {
+            get => _region;
+            set
+            {
+                _region = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int FsGlobalAccessLogMode
+        {
+            get => _fsGlobalAccessLogMode;
+            set
+            {
+                _fsGlobalAccessLogMode = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int AudioBackend
+        {
+            get => _audioBackend;
+            set
+            {
+                _audioBackend = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int MaxAnisotropy
+        {
+            get => _maxAnisotropy;
+            set
+            {
+                _maxAnisotropy = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int AspectRatio
+        {
+            get => _aspectRatio;
+            set
+            {
+                _aspectRatio = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int AntiAliasingEffect
+        {
+            get => _antiAliasingEffect;
+            set
+            {
+                _antiAliasingEffect = value;
+
+                OnPropertyChanged();
+            }
+        }
+
         public string ScalingFilterLevelText => ScalingFilterLevel.ToString("0");
         public int ScalingFilterLevel
         {
@@ -186,9 +653,40 @@ namespace Ryujinx.Ava.UI.ViewModels
                 OnPropertyChanged(nameof(ScalingFilterLevelText));
             }
         }
-        public int OpenglDebugLevel { get; set; }
-        public int MemoryMode { get; set; }
-        public int BaseStyleIndex { get; set; }
+
+        public int OpenglDebugLevel
+        {
+            get => _openglDebugLevel;
+            set
+            {
+                _openglDebugLevel = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int MemoryMode
+        {
+            get => _memoryMode;
+            set
+            {
+                _memoryMode = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int BaseStyleIndex
+        {
+            get => _baseStyleIndex;
+            set
+            {
+                _baseStyleIndex = value;
+
+                OnPropertyChanged();
+            }
+        }
+
         public int GraphicsBackendIndex
         {
             get => _graphicsBackendIndex;
@@ -210,7 +708,16 @@ namespace Ryujinx.Ava.UI.ViewModels
             }
         }
 
-        public int PreferredGpuIndex { get; set; }
+        public int PreferredGpuIndex
+        {
+            get => _preferredGpuIndex;
+            set
+            {
+                _preferredGpuIndex = value;
+
+                OnPropertyChanged();
+            }
+        }
 
         public float Volume
         {
@@ -225,19 +732,76 @@ namespace Ryujinx.Ava.UI.ViewModels
             }
         }
 
-        public DateTimeOffset CurrentDate { get; set; }
-        public TimeSpan CurrentTime { get; set; }
+        public DateTimeOffset CurrentDate
+        {
+            get => _currentDate;
+            set
+            {
+                _currentDate = value;
 
-        internal AvaloniaList<TimeZone> TimeZones { get; set; }
-        public AvaloniaList<string> GameDirectories { get; set; }
-        public ObservableCollection<ComboBoxItem> AvailableGpus { get; set; }
+                OnPropertyChanged();
+            }
+        }
+
+        public TimeSpan CurrentTime
+        {
+            get => _currentTime;
+            set
+            {
+                _currentTime = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        internal AvaloniaList<TimeZone> TimeZones
+        {
+            get => _timeZones;
+            set
+            {
+                _timeZones = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public AvaloniaList<string> GameDirectories
+        {
+            get => _gameDirectories;
+            set
+            {
+                _gameDirectories = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<ComboBoxItem> AvailableGpus
+        {
+            get => _availableGpus;
+            set
+            {
+                _availableGpus = value;
+
+                OnPropertyChanged();
+            }
+        }
 
         public AvaloniaList<string> NetworkInterfaceList
         {
             get => new(_networkInterfaces.Keys);
         }
 
-        public HotkeyConfig KeyboardHotkey { get; set; }
+        public HotkeyConfig KeyboardHotkey
+        {
+            get => _keyboardHotkey;
+            set
+            {
+                _keyboardHotkey = value;
+
+                OnPropertyChanged();
+            }
+        }
 
         public int NetworkInterfaceIndex
         {
@@ -246,6 +810,8 @@ namespace Ryujinx.Ava.UI.ViewModels
             {
                 _networkInterfaceIndex = value != -1 ? value : 0;
                 ConfigurationState.Instance.Multiplayer.LanInterfaceId.Value = _networkInterfaces[NetworkInterfaceList[_networkInterfaceIndex]];
+
+                OnPropertyChanged();
             }
         }
 
@@ -256,6 +822,8 @@ namespace Ryujinx.Ava.UI.ViewModels
             {
                 _multiplayerModeIndex = value;
                 ConfigurationState.Instance.Multiplayer.Mode.Value = (MultiplayerMode)_multiplayerModeIndex;
+
+                OnPropertyChanged();
             }
         }
 
@@ -610,6 +1178,12 @@ namespace Ryujinx.Ava.UI.ViewModels
         {
             RevertIfNotSaved();
             CloseWindow?.Invoke();
+        }
+
+        public void RestoreDefaults()
+        {
+            ConfigurationState.Instance.LoadDefault();
+            LoadCurrentConfiguration();
         }
     }
 }

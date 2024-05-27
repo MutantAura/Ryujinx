@@ -197,6 +197,7 @@
   "SettingsButtonOk": "OK",
   "SettingsButtonCancel": "Cancel",
   "SettingsButtonApply": "Apply",
+  "SettingsButtonDefaults": "Restore Defaults",
   "ControllerSettingsPlayer": "Player",
   "ControllerSettingsPlayer1": "Player 1",
   "ControllerSettingsPlayer2": "Player 2",

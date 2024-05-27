@@ -61,15 +61,10 @@ namespace Ryujinx.Ava.UI.Windows
         {
             ViewModel.Save();
 
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime al)
+            Window mainWindow = WindowHelper.GetMainWindow();
+            if (mainWindow != null)
             {
-                foreach (Window window in al.Windows)
-                {
-                    if (window is MainWindow mainWindow)
-                    {
-                        mainWindow.LoadApplications();
-                    }
-                }
+                ((MainWindow)mainWindow).LoadApplications();
             }
 
             ((ContentDialog)Parent).Hide();

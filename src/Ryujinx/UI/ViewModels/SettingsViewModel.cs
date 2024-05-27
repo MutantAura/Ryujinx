@@ -38,7 +38,7 @@ namespace Ryujinx.Ava.UI.ViewModels
         private readonly List<string> _validTzRegions;
         private AvaloniaList<TimeZone> _timeZones;
         private readonly Dictionary<string, string> _networkInterfaces;
-        private ObservableCollection<ComboBoxItem> _availableGpus;
+        private ObservableCollection<string> _availableGpus;
         private readonly List<string> _gpuIds = new();
         private bool _isVulkanAvailable = true;
 
@@ -129,6 +129,7 @@ namespace Ryujinx.Ava.UI.ViewModels
             {
                 _resolutionScale = value;
 
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(CustomResolutionScale));
                 OnPropertyChanged(nameof(IsCustomResolutionScaleActive));
             }
@@ -776,7 +777,7 @@ namespace Ryujinx.Ava.UI.ViewModels
             }
         }
 
-        public ObservableCollection<ComboBoxItem> AvailableGpus
+        public ObservableCollection<string> AvailableGpus
         {
             get => _availableGpus;
             set
@@ -841,7 +842,7 @@ namespace Ryujinx.Ava.UI.ViewModels
         {
             GameDirectories = new AvaloniaList<string>();
             TimeZones = new AvaloniaList<TimeZone>();
-            AvailableGpus = new ObservableCollection<ComboBoxItem>();
+            AvailableGpus = new ObservableCollection<string>();
             _validTzRegions = new List<string>();
             _networkInterfaces = new Dictionary<string, string>();
 
@@ -855,18 +856,11 @@ namespace Ryujinx.Ava.UI.ViewModels
             }
         }
 
-        public async Task CheckSoundBackends()
+        public void CheckSoundBackends()
         {
             IsOpenAlEnabled = OpenALHardwareDeviceDriver.IsSupported;
             IsSoundIoEnabled = SoundIoHardwareDeviceDriver.IsSupported;
             IsSDL2Enabled = SDL2HardwareDeviceDriver.IsSupported;
-
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                OnPropertyChanged(nameof(IsOpenAlEnabled));
-                OnPropertyChanged(nameof(IsSoundIoEnabled));
-                OnPropertyChanged(nameof(IsSDL2Enabled));
-            });
         }
 
         private async Task LoadAvailableGpus()
@@ -888,7 +882,7 @@ namespace Ryujinx.Ava.UI.ViewModels
                     {
                         _gpuIds.Add(device.Id);
 
-                        AvailableGpus.Add(new ComboBoxItem { Content = $"{device.Name} {(device.IsDiscrete ? "(dGPU)" : "")}" });
+                        AvailableGpus.Add($"{device.Name} {(device.IsDiscrete ? "(dGPU)" : "")}");
                     });
                 }
             }
@@ -896,8 +890,6 @@ namespace Ryujinx.Ava.UI.ViewModels
             // GPU configuration needs to be loaded during the async method or it will always return 0.
             PreferredGpuIndex = _gpuIds.Contains(ConfigurationState.Instance.Graphics.PreferredGpu) ?
                                 _gpuIds.IndexOf(ConfigurationState.Instance.Graphics.PreferredGpu) : 0;
-
-            Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(PreferredGpuIndex)));
         }
 
         public async Task LoadTimeZones()
@@ -920,8 +912,6 @@ namespace Ryujinx.Ava.UI.ViewModels
                     _validTzRegions.Add(location);
                 });
             }
-
-            Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(TimeZone)));
         }
 
         private async Task PopulateNetworkInterfaces()
@@ -939,8 +929,6 @@ namespace Ryujinx.Ava.UI.ViewModels
 
             // Network interface index  needs to be loaded during the async method or it will always return 0.
             NetworkInterfaceIndex = _networkInterfaces.Values.ToList().IndexOf(ConfigurationState.Instance.Multiplayer.LanInterfaceId.Value);
-
-            Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(NetworkInterfaceIndex)));
         }
 
         public void ValidateAndSetTimeZone(string location)

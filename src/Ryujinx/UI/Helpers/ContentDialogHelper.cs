@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -313,7 +312,7 @@ namespace Ryujinx.Ava.UI.Helpers
             ContentDialogResult result;
             bool isTopDialog = true;
 
-            Window parent = GetMainWindow();
+            Window parent = WindowHelper.GetMainWindow();
 
             if (_contentDialogOverlayWindow != null)
             {
@@ -401,25 +400,9 @@ namespace Ryujinx.Ava.UI.Helpers
 
         public static Task ShowWindowAsync(Window dialogWindow, Window mainWindow = null)
         {
-            mainWindow ??= GetMainWindow();
+            mainWindow ??= WindowHelper.GetMainWindow();
 
             return dialogWindow.ShowDialog(_contentDialogOverlayWindow ?? mainWindow);
-        }
-
-        private static Window GetMainWindow()
-        {
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime al)
-            {
-                foreach (Window item in al.Windows)
-                {
-                    if (item is MainWindow window)
-                    {
-                        return window;
-                    }
-                }
-            }
-
-            return null;
         }
     }
 }

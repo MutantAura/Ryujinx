@@ -2,12 +2,12 @@ using System;
 
 namespace Ryujinx.Ava.UI.Models
 {
-    internal class StatusInitEventArgs : EventArgs
+    internal class RendererInitEventArgs : EventArgs
     {
         public string GpuBackend { get; }
         public string GpuName { get; }
 
-        public StatusInitEventArgs(string gpuBackend, string gpuName)
+        public RendererInitEventArgs(string gpuBackend, string gpuName)
         {
             GpuBackend = gpuBackend;
             GpuName = gpuName;

@@ -491,28 +491,6 @@ namespace Ryujinx.Ava.UI.ViewModels
             }
         }
 
-        public string GpuNameText
-        {
-            get => _gpuStatusText;
-            set
-            {
-                _gpuStatusText = value;
-
-                OnPropertyChanged();
-            }
-        }
-
-        public string BackendText
-        {
-            get => _backendText;
-            set
-            {
-                _backendText = value;
-
-                OnPropertyChanged();
-            }
-        }
-
         public string DockedStatusText
         {
             get => _dockedStatusText;
@@ -1182,7 +1160,7 @@ namespace Ryujinx.Ava.UI.ViewModels
         {
             RendererHostControl.WindowCreated += RendererHost_Created;
 
-            AppHost.StatusInitEvent += Init_StatusBar;
+            AppHost.RendererInitEvent += Init_RendererStatus;
             AppHost.StatusUpdatedEvent += Update_StatusBar;
             AppHost.AppExit += AppHost_AppExit;
 
@@ -1209,16 +1187,12 @@ namespace Ryujinx.Ava.UI.ViewModels
             }
         }
 
-        private void Init_StatusBar(object sender, StatusInitEventArgs args)
+        private void Init_RendererStatus(object sender, RendererInitEventArgs args)
         {
-            if (ShowMenuAndStatusBar && !ShowLoadProgress)
+            Dispatcher.UIThread.InvokeAsync(() =>
             {
-                Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    GpuNameText = args.GpuName;
-                    BackendText = args.GpuBackend;
-                });
-            }
+                Title = $"{Title} - {args.GpuBackend} - {args.GpuName}";
+            });
         }
 
         private void Update_StatusBar(object sender, StatusUpdatedEventArgs args)

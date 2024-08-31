@@ -241,36 +241,6 @@
                 IsVisible="{Binding !ShowLoadProgress}"
                 Text="{Binding FifoStatusText}"
                 TextAlignment="Start" />
-            <Border
-                Width="2"
-                Height="12"
-                Margin="0"
-                BorderBrush="Gray"
-                Background="Gray"
-                BorderThickness="1"
-                IsVisible="{Binding !ShowLoadProgress}" />
-            <TextBlock
-                Margin="5,0,5,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                IsVisible="{Binding !ShowLoadProgress}"
-                Text="{Binding BackendText}"
-                TextAlignment="Start" />
-            <Border
-                Width="2"
-                Height="12"
-                Margin="0"
-                BorderBrush="Gray"
-                Background="Gray"
-                BorderThickness="1"
-                IsVisible="{Binding !ShowLoadProgress}" />
-            <TextBlock
-                Margin="5,0,5,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                IsVisible="{Binding !ShowLoadProgress}"
-                Text="{Binding GpuNameText}"
-                TextAlignment="Start" />
         </StackPanel>
         <StackPanel
             Grid.Column="3"
